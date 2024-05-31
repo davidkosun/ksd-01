@@ -19,6 +19,6 @@ steps:
 - task: CmdLine@2
   inputs:
     script: |
-      az login --service-principal -u $($(AZSP_USERNAME)) -p $($(AZSP_USERPASSWD)) --tenant $($(AZ_DEV_TENANT_ID_1))
+      az login --service-principal -u $(AZSP_USERNAME) -p $(AZSP_USERPASSWD) --tenant $(AZ_DEV_TENANT_ID_1)
       
-      az account set --subscription $($(AZ_DEV_SUB_ID_1))
+      az account set --subscription $(AZ_DEV_SUB_ID_1)
