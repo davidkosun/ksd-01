@@ -12,21 +12,15 @@ pool:
    - agent.name -equals lksddevops01
 
 steps:
-# - task: InstallAzCli@1
-#   displayName: 'Install Azure CLI'
-#   inputs:
-#     command: 'custom'
-#     customCommand: 'curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash'
+- task: CmdLine@2
+  inputs:
+    script: 'curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash'
+  
 - task: AzureCLI@2
   inputs:
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
-    inlineScript: 'az login --service-principal -u $(azsp_username) -p $(azsp_userpasswd) --tenant $(az_dev_tenant_id_1)'
-    
-# - task: LoginAz@1
-#   displayName: 'Login to Azure by using Service Principal'
-#   inputs:
-#     targetType: 'inline'
-#     script: |
-#       az login --service-principal -u $(azsp_username) -p $(azsp_userpasswd) --tenant $(az_dev_tenant_id_1)
-#       az account set --subscription $(az_dev_sub_id_1)
+    inlineScript: |
+      az login --service-principal -u $(azsp_username) -p $(azsp_userpasswd) --tenant $(az_dev_tenant_id_1)
+      
+      az account set --subscription $(az_dev_sub_id_1)
