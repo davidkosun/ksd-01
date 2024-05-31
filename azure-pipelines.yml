@@ -1,0 +1,25 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- task: InstallAzCli@1
+  displayName: 'Install Azure CLI'
+  inputs:
+    command: 'custom'
+    customCommand: 'curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash'
+
+- task: LoginAz@1
+  displayName: 'Login to Azure by using Service Principal'
+  inputs:
+    targetType: 'inline'
+    script: |
+      az login --service-principal -u $(azsp_username) -p $(azsp_userpasswd) --tenant $(az_dev_tenant_id_1)
+      az account set --subscription $(az_dev_sub_id_1)
