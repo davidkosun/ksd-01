@@ -10,6 +10,10 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
+- task: Npm@1
+  displayName: 'Install Dependencies'
+  inputs:
+    command: 'install'
 - task: InstallAzCli@1
   displayName: 'Install Azure CLI'
   inputs:
