@@ -10,16 +10,11 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-- task: Npm@1
-  displayName: 'Install Dependencies'
-  inputs:
-    command: 'install'
 - task: InstallAzCli@1
   displayName: 'Install Azure CLI'
   inputs:
     command: 'custom'
     customCommand: 'curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash'
-
 - task: LoginAz@1
   displayName: 'Login to Azure by using Service Principal'
   inputs:
