@@ -7,9 +7,9 @@ trigger:
 - main
 
 pool:
-  name: ksd-self-hosted-agent
+  name: $(AZ_AGENT_POOL_NAME)
   demands:
-   - agent.name -equals lksddevops01
+   - agent.name -equals $(AZ_AGENT_NAME)
 
 steps:
 - task: CmdLine@2
@@ -22,3 +22,4 @@ steps:
       az login --service-principal -u $(AZSP_USERNAME) -p $(AZSP_USERPASSWD) --tenant $(AZ_DEV_TENANT_ID_1)
       
       az account set --subscription $(AZ_DEV_SUB_ID_1)
+
