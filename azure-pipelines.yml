@@ -7,7 +7,7 @@ trigger:
 - main
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: lksddevops01
 
 steps:
 # - task: InstallAzCli@1
