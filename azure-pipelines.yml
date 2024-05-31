@@ -14,7 +14,7 @@ pool:
 steps:
 - task: CmdLine@2
   inputs:
-    script: 'curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash'
+    script: 'az --version'
   
 - task: AzureCLI@2
   inputs:
@@ -22,5 +22,4 @@ steps:
     scriptLocation: 'inlineScript'
     inlineScript: |
       az login --service-principal -u $(azsp_username) -p $(azsp_userpasswd) --tenant $(az_dev_tenant_id_1)
-      
       az account set --subscription $(az_dev_sub_id_1)
