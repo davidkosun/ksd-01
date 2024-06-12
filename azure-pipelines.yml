@@ -23,3 +23,5 @@ steps:
       
       az account set --subscription $(AZ_DEV_SUB_ID_1)
 
+      az group create --name rg-test-devops-01a --location eastasia
+
