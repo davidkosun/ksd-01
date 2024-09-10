@@ -1,0 +1,12 @@
+{
+    "cluster_type": "ManagedKubernetes",
+    "profile": "Serverless",
+    "name": "david-serverless-k8s",
+    "region_id": "cn-hongkong",
+    "zoneid": "cn-hongkong-d",
+    "nat_gateway": true,
+    "private_zone": false,
+    "tags": [
+        {"key": "env", "value": "dev"}
+    ]
+}
