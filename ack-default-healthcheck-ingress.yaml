@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: k8s-default-healthcheck-ingress
+  namespace: healthcheck
+spec:
+  ingressClassName: alb
+  rules:
+  - http:
+      paths:
+      - path: /default-healthcheck-one(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: k8s-service-default-healthcheck-one
+            port:
+              number: 80
