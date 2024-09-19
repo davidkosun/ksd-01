@@ -1,0 +1,81 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ccg-proweb-prd-ingress
+  namespace: ccg-proweb-prd
+spec:
+  ingressClassName: alb
+  rules:
+    - host: www.mountanderson.com.hk
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: ccg-proweb-prd-ma-service
+              port:
+                number: 80
+  tls:
+  - hosts: 
+    - www.mountanderson.com.hk
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ma
+  namespace: ccg-proweb
+  labels:
+    Environment: PRD
+    Owner: Digital Channels
+    Project name: mountanderson
+spec:
+  env:
+  - name: VARNAME
+      value: VARVAL
+  - name: aliyun_logs_log-stdout
+      value: stdout
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ma
+  template:
+    metadata:
+      labels:
+        app: ma
+    spec:
+      containers:
+      - name: ma
+        image: registry.cn-hangzhou.aliyuncs.com/acs-sample/nginxdemos:latest
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "1024Mi"  # Initial memory request
+            cpu: "256m"       # Initial CPU request
+          limits:
+            memory: "1024Mi"  # Maximum memory allowed
+            cpu: "256m"       # Maximum CPU allowed
+        volumes:
+      - name: ma
+        persistentVolumeClaim:
+          claimName: ma
+        volumeMounts:
+          - mountPath: "/home/mountanderson/public_html/upload"
+            name: ma
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ccg-proweb-prd-ma-service
+  namespace: ccg-proweb
+  labels:
+    app: ccg-proweb-prd-ma-service
+spec:
+  selector:
+    app: ma
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
