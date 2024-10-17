@@ -1,0 +1,78 @@
+apiVersion: alibabacloud.com/v1
+kind: AlbConfig
+metadata:
+  name: k8s-alb-conf
+  namespace: proweb-ingress-uat-ns
+spec:
+  config:
+    id: alb-pyy41v8whbskfhxk3k
+    forceOverride: false
+    listenerForceOverride: true
+    # name: proweb-uat-k8s-ingress-controller
+    # addressType: Internet
+    # zoneMappings:
+    # - vSwitchId: vsw-j6cxd89avaisjnnrvhu6c
+    # - vSwitchId: vsw-j6c3tvzewvu92oa7pqb6b
+    # - vSwitchId: vsw-j6cvjkl7xa8lxg8rhn26n
+    # accessLogConfig:
+    #   logProject: "proweb-uat-alblog-project"
+    #   logStore: "proweb_uat_alblog"
+  listeners:
+    # - port: 80
+    #   protocol: HTTP
+    #   aclConfig:
+    #     aclType: White
+    #     aclIds:
+    #       - acl-dth1uywek33zx2kxim
+    #     # aclEntries:
+    #     #   - 127.0.0.1/32
+    #   requestTimeout: 90
+    #   xForwardedForConfig:
+    #     XForwardedForEnabled: true
+    #     XForwardedForProtoEnabled: true
+    #     XForwardedForClientSrcPortEnabled: true
+    #     XForwardedForSLBIdEnabled: true
+    #     XForwardedForSLBPortEnabled: true
+    - port: 443
+      protocol: HTTPS
+      aclConfig:
+        aclType: White
+        aclIds:
+          - acl-dth1uywek33zx2kxim
+        # aclEntries:
+        #   - 127.0.0.1/32
+      requestTimeout: 90
+      xForwardedForConfig:
+        XForwardedForEnabled: true
+        XForwardedForProtoEnabled: true
+        XForwardedForClientSrcPortEnabled: true
+        XForwardedForSLBIdEnabled: true
+        XForwardedForSLBPortEnabled: true
+      # gzipEnabled: true
+      certificates:
+      - CertificateId: 130913-ap-southeast-1
+        IsDefault: true
+      - CertificateId: 130459-ap-southeast-1
+      - CertificateId: 130914-ap-southeast-1
+---
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  name: k8s-alb
+spec:
+  controller: ingress.k8s.alibabacloud/alb
+  parameters:
+    apiGroup: alibabacloud.com
+    kind: AlbConfig
+    name: k8s-alb-conf
+---
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  name: k8s-alb-https
+spec:
+  controller: ingress.k8s.alibabacloud/alb
+  parameters:
+    apiGroup: alibabacloud.com
+    kind: AlbConfig
+    name: k8s-alb-conf
