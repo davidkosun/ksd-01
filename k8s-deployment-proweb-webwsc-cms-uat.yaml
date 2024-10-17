@@ -145,7 +145,7 @@ spec:
   selector:
     app: proweb-webwsc-uat-cms
   sessionAffinity: None
-  type: ClusterIP
+  type: LoadBalancer
   ports:
     - protocol: TCP
       port: 80

@@ -54,6 +54,11 @@ spec:
         IsDefault: true
       - CertificateId: 130459-ap-southeast-1
       - CertificateId: 130914-ap-southeast-1
+      - CertificateId: 133690-ap-southeast-1
+      - CertificateId: 133796-ap-southeast-1
+      - CertificateId: 133798-ap-southeast-1
+      - CertificateId: 133799-ap-southeast-1
+      - CertificateId: 133800-ap-southeast-1
 ---
 apiVersion: networking.k8s.io/v1
 kind: IngressClass
