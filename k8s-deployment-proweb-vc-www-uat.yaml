@@ -145,7 +145,7 @@ spec:
   selector:
     app: proweb-vc-uat-www
   sessionAffinity: None
-  type: LoadBalancer
+  type: ClusterIP
   ports:
     - protocol: TCP
       port: 80
