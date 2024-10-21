@@ -22,7 +22,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: proweb-eh-uat-cms-oss-peh
+  name: proweb-eh-uat-cms-oss-pvc
   namespace: proweb-eh-uat-cms-ns
 spec:
   storageClassName: oss
