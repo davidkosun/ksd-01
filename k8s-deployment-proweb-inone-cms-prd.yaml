@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: proweb-inone-uat-cms-oss-pv
+  name: proweb-inone-prd-cms-oss-pv
   labels:
-    alicloud-pvname: proweb-inone-uat-cms-oss-pv
+    alicloud-pvname: proweb-inone-prd-cms-oss-pv
 spec:
   storageClassName: oss
   capacity:
@@ -13,17 +13,17 @@ spec:
   flexVolume:
     driver: "alicloud/oss"
     options:
-      bucket: "proweb-inone-uat-cms-pv"
+      bucket: "proweb-inone-prd-cms-pv"
       path: "/"
       url: "oss-cn-hongkong-internal.aliyuncs.com"
       otherOpts: "-o max_stat_cache_size=0 -o allow_other"
-      ramRole: "proweb-uat-inone-cms-k8s-oss-access-role"
+      ramRole: "proweb-prd-inone-cms-k8s-oss-access-role"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: proweb-inone-uat-cms-oss-pvc
-  namespace: proweb-inone-uat-cms-ns
+  name: proweb-inone-prd-cms-oss-pvc
+  namespace: proweb-inone-prd-cms-ns
 spec:
   storageClassName: oss
   accessModes:
@@ -33,51 +33,51 @@ spec:
       storage: 100Gi
   selector:
     matchLabels:
-      alicloud-pvname: proweb-inone-uat-cms-oss-pv
+      alicloud-pvname: proweb-inone-prd-cms-oss-pv
 ---
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: proweb-inone-uat-cms-nas
-  labels:
-    alicloud-pvname: proweb-inone-uat-cms-nas
-spec:
-  storageClassName: nas
-  capacity:
-    storage: 100Gi
-  accessModes:
-    - ReadWriteMany
-  flexVolume:
-    driver: "alicloud/nas"
-    options:
-      server: "1284aa4be46-aiy43.cn-hongkong.nas.aliyuncs.com"
-      path: "/"
-      vers: "4.0"
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: proweb-inone-uat-cms-nas-pvc
-  namespace: proweb-inone-uat-cms-ns
-spec:
-  storageClassName: nas
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 100Gi
-  selector:
-    matchLabels:
-      alicloud-pvname: proweb-inone-uat-cms-nas
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: proweb-inone-prd-cms-nas
+#   labels:
+#     alicloud-pvname: proweb-inone-prd-cms-nas
+# spec:
+#   storageClassName: nas
+#   capacity:
+#     storage: 100Gi
+#   accessModes:
+#     - ReadWriteMany
+#   flexVolume:
+#     driver: "alicloud/nas"
+#     options:
+#       server: "1284aa4be46-aiy43.cn-hongkong.nas.aliyuncs.com"
+#       path: "/"
+#       vers: "4.0"
+# ---
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: proweb-inone-prd-cms-nas-pvc
+#   namespace: proweb-inone-prd-cms-ns
+# spec:
+#   storageClassName: nas
+#   accessModes:
+#     - ReadWriteMany
+#   resources:
+#     requests:
+#       storage: 100Gi
+#   selector:
+#     matchLabels:
+#       alicloud-pvname: proweb-inone-prd-cms-nas
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: proweb-inone-uat-cms
-  namespace: proweb-inone-uat-cms-ns
+  name: proweb-inone-prd-cms
+  namespace: proweb-inone-prd-cms-ns
   labels:
-    app: proweb-inone-uat-cms
-    Environment: UAT
+    app: proweb-inone-prd-cms
+    Environment: prd
     Owner: DigitalChannels
     ProjectName: inone
 spec:
@@ -88,32 +88,31 @@ spec:
      maxUnavailable: 0
   selector:
     matchLabels:
-      app: proweb-inone-uat-cms
+      app: proweb-inone-prd-cms
   template:
     metadata:
       annotations:
         k8s.aliyun.com/eci-sls-enable: "true"
-        k8s.aliyun.com/acr-service-arns: "acs:ram::5725926127090411:role/k8s-uat-acr-access"
+        k8s.aliyun.com/acr-service-arns: "acs:ram::5725926127090411:role/k8s-prd-acr-access"
       labels:
-        app: proweb-inone-uat-cms
+        app: proweb-inone-prd-cms
     spec:
       containers:
-      - name: proweb-inone-uat-cms
-        # image: registry.cn-hangzhou.aliyuncs.com/acs-sample/nginxdemos:latest
-        image: proweb-acr-registry-vpc.cn-hongkong.cr.aliyuncs.com/proweb-uat/proweb-inone-uat-cms-acr-repo:latest
+      - name: proweb-inone-prd-cms
+        image: proweb-acr-registry-vpc.cn-hongkong.cr.aliyuncs.com/proweb-prd/proweb-inone-prd-cms-acr-repo:latest
         ports:
         - containerPort: 80
         env:
         - name: VARNAME
           value: VARVAL
-        - name: aliyun_logs_proweb-inone-uat-cms-log
+        - name: aliyun_logs_proweb-inone-prd-cms-log
           value: stdout
-        - name: aliyun_logs_proweb-inone-uat-cms-log_project
-          value: proweb-inone-uat-cms-log-project
-        - name: aliyun_logs_proweb-inone-uat-cms-log_logstore
-          value: proweb-inone-uat-cms-log
-        - name: aliyun_logs_proweb-inone-uat-cms_machinegroup
-          value: proweb-uat-k8s-cluster
+        - name: aliyun_logs_proweb-inone-prd-cms-log_project
+          value: proweb-inone-prd-cms-log-project
+        - name: aliyun_logs_proweb-inone-prd-cms-log_logstore
+          value: proweb-inone-prd-cms-log
+        - name: aliyun_logs_proweb-inone-prd-cms_machinegroup
+          value: proweb-prd-k8s-cluster
         resources:
           requests:
             memory: "1024Mi"  # Initial memory request
@@ -122,28 +121,28 @@ spec:
             memory: "1024Mi"  # Maximum memory allowed
             cpu: "256m"       # Maximum CPU allowed
         volumeMounts:
-        - name: proweb-inone-uat-cms-oss-pvc
+        - name: proweb-inone-prd-cms-oss-pvc
           mountPath: "/mnt/oss"
-        # - name: proweb-inone-uat-nas-pvc
+        # - name: proweb-inone-prd-nas-pvc
         #   mountPath: "/mnt/oss"
       volumes:
-      - name: proweb-inone-uat-cms-oss-pvc
+      - name: proweb-inone-prd-cms-oss-pvc
         persistentVolumeClaim:
-          claimName: proweb-inone-uat-cms-oss-pvc
-      # - name: proweb-inone-uat-nas-pvc
+          claimName: proweb-inone-prd-cms-oss-pvc
+      # - name: proweb-inone-prd-nas-pvc
       #   persistentVolumeClaim:
-      #     claimName: proweb-inone-uat-nas-pvc
+      #     claimName: proweb-inone-prd-nas-pvc
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: proweb-inone-uat-cms-service
-  namespace: proweb-inone-uat-cms-ns
+  name: proweb-inone-prd-cms-service
+  namespace: proweb-inone-prd-cms-ns
   labels:
-    app: proweb-inone-uat-cms-service
+    app: proweb-inone-prd-cms-service
 spec:
   selector:
-    app: proweb-inone-uat-cms
+    app: proweb-inone-prd-cms
   sessionAffinity: None
   type: ClusterIP
   ports:
@@ -154,10 +153,10 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: proweb-inone-uat-cms-ingress
-  namespace: proweb-inone-uat-cms-ns
+  name: proweb-inone-prd-cms-ingress
+  namespace: proweb-inone-prd-cms-ns
   labels:
-    ingress: proweb-inone-uat-cms-ingress
+    ingress: proweb-inone-prd-cms-ingress
   annotations:
     alb.ingress.kubernetes.io/healthcheck-enabled: "true"
     alb.ingress.kubernetes.io/healthcheck-path: "/"
@@ -181,7 +180,7 @@ spec:
           pathType: Prefix
           backend:
             service:
-              name: proweb-inone-uat-cms-service
+              name: proweb-inone-prd-cms-service
               port:
                 number: 80
   tls:
@@ -192,7 +191,7 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: allow-egress-any-any
-  namespace: proweb-inone-uat-cms-ns
+  namespace: proweb-inone-prd-cms-ns
 spec:
   podSelector: {}
   policyTypes:
@@ -203,13 +202,13 @@ spec:
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: proweb-inone-uat-cms-hpa
-  namespace: proweb-inone-uat-cms-ns
+  name: proweb-inone-prd-cms-hpa
+  namespace: proweb-inone-prd-cms-ns
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: proweb-inone-uat-cms
+    name: proweb-inone-prd-cms
   minReplicas: 1
   maxReplicas: 2
   # behavior:

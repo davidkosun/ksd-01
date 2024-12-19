@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: proweb-uh-uat-oss-pv
+  name: proweb-uh-prd-oss-pv
   labels:
-    alicloud-pvname: proweb-uh-uat-oss-pv
+    alicloud-pvname: proweb-uh-prd-oss-pv
 spec:
   storageClassName: oss
   capacity:
@@ -13,17 +13,17 @@ spec:
   flexVolume:
     driver: "alicloud/oss"
     options:
-      bucket: "proweb-uh-uat-pv"
+      bucket: "proweb-uh-prd-pv"
       path: "/"
       url: "oss-cn-hongkong-internal.aliyuncs.com"
       otherOpts: "-o max_stat_cache_size=0 -o allow_other"
-      ramRole: "proweb-uat-uh-k8s-oss-access-role"
+      ramRole: "proweb-prd-uh-k8s-oss-access-role"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: proweb-uh-uat-oss-pvc
-  namespace: proweb-uh-uat-ns
+  name: proweb-uh-prd-oss-pvc
+  namespace: proweb-uh-prd-ns
 spec:
   storageClassName: oss
   accessModes:
@@ -33,51 +33,51 @@ spec:
       storage: 100Gi
   selector:
     matchLabels:
-      alicloud-pvname: proweb-uh-uat-oss-pv
+      alicloud-pvname: proweb-uh-prd-oss-pv
 ---
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: proweb-uh-uat-nas
-  labels:
-    alicloud-pvname: proweb-uh-uat-nas
-spec:
-  storageClassName: nas
-  capacity:
-    storage: 100Gi
-  accessModes:
-    - ReadWriteMany
-  flexVolume:
-    driver: "alicloud/nas"
-    options:
-      server: "121c294ae7d-bcu43.cn-hongkong.nas.aliyuncs.com"
-      path: "/"
-      vers: "4.0"
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: proweb-uh-uat-nas-pvc
-  namespace: proweb-uh-uat-ns
-spec:
-  storageClassName: nas 
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 100Gi
-  selector:
-    matchLabels:
-      alicloud-pvname: proweb-uh-uat-nas
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: proweb-uh-prd-nas
+#   labels:
+#     alicloud-pvname: proweb-uh-prd-nas
+# spec:
+#   storageClassName: nas
+#   capacity:
+#     storage: 100Gi
+#   accessModes:
+#     - ReadWriteMany
+#   flexVolume:
+#     driver: "alicloud/nas"
+#     options:
+#       server: "121c294ae7d-bcu43.cn-hongkong.nas.aliyuncs.com"
+#       path: "/"
+#       vers: "4.0"
+# ---
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: proweb-uh-prd-nas-pvc
+#   namespace: proweb-uh-prd-ns
+# spec:
+#   storageClassName: nas 
+#   accessModes:
+#     - ReadWriteMany
+#   resources:
+#     requests:
+#       storage: 100Gi
+#   selector:
+#     matchLabels:
+#       alicloud-pvname: proweb-uh-prd-nas
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: proweb-uh-uat
-  namespace: proweb-uh-uat-ns
+  name: proweb-uh-prd
+  namespace: proweb-uh-prd-ns
   labels:
-    app: proweb-uh-uat
-    Environment: UAT
+    app: proweb-uh-prd
+    Environment: prd
     Owner: DigitalChannels
     ProjectName: universityheights
 spec:
@@ -88,32 +88,31 @@ spec:
      maxUnavailable: 0
   selector:
     matchLabels:
-      app: proweb-uh-uat
+      app: proweb-uh-prd
   template:
     metadata:
       annotations:
         k8s.aliyun.com/eci-sls-enable: "true"
-        k8s.aliyun.com/acr-service-arns: "acs:ram::5725926127090411:role/k8s-uat-acr-access"
+        k8s.aliyun.com/acr-service-arns: "acs:ram::5725926127090411:role/k8s-prd-acr-access"
       labels:
-        app: proweb-uh-uat
+        app: proweb-uh-prd
     spec:
       containers:
-      - name: proweb-uh-uat
-        # image: registry.cn-hangzhou.aliyuncs.com/acs-sample/nginxdemos:latest
-        image: proweb-acr-registry-vpc.cn-hongkong.cr.aliyuncs.com/proweb-uat/proweb-uh-uat-acr-repo:latest
+      - name: proweb-uh-prd
+        image: proweb-acr-registry-vpc.cn-hongkong.cr.aliyuncs.com/proweb-prd/proweb-uh-prd-acr-repo:latest
         ports:
         - containerPort: 80
         env:
         - name: VARNAME
           value: VARVAL
-        - name: aliyun_logs_proweb-uh-uat-log
+        - name: aliyun_logs_proweb-uh-prd-log
           value: stdout
-        - name: aliyun_logs_proweb-uh-uat-log_project
-          value: proweb-uh-uat-log-project
-        - name: aliyun_logs_proweb-uh-uat-log_logstore
-          value: proweb-uh-uat-log
-        - name: aliyun_logs_proweb-uh-uat_machinegroup
-          value: proweb-uat-k8s-cluster
+        - name: aliyun_logs_proweb-uh-prd-log_project
+          value: proweb-uh-prd-log-project
+        - name: aliyun_logs_proweb-uh-prd-log_logstore
+          value: proweb-uh-prd-log
+        - name: aliyun_logs_proweb-uh-prd_machinegroup
+          value: proweb-prd-k8s-cluster
         resources:
           requests:
             memory: "1024Mi"  # Initial memory request
@@ -122,28 +121,28 @@ spec:
             memory: "1024Mi"  # Maximum memory allowed
             cpu: "256m"       # Maximum CPU allowed
         volumeMounts:
-        - name: proweb-uh-uat-oss-pvc
+        - name: proweb-uh-prd-oss-pvc
           mountPath: "/home/universityheights/public_html/upload/"
-        # - name: proweb-uh-uat-nas-pvc
+        # - name: proweb-uh-prd-nas-pvc
         #   mountPath: "/home/universityheights/public_html/upload/"
       volumes:
-      - name: proweb-uh-uat-oss-pvc
+      - name: proweb-uh-prd-oss-pvc
         persistentVolumeClaim:
-          claimName: proweb-uh-uat-oss-pvc
-      # - name: proweb-uh-uat-nas-pvc
+          claimName: proweb-uh-prd-oss-pvc
+      # - name: proweb-uh-prd-nas-pvc
       #   persistentVolumeClaim:
-      #     claimName: proweb-uh-uat-nas-pvc
+      #     claimName: proweb-uh-prd-nas-pvc
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: proweb-uh-uat-service
-  namespace: proweb-uh-uat-ns
+  name: proweb-uh-prd-service
+  namespace: proweb-uh-prd-ns
   labels:
-    app: proweb-uh-uat-service
+    app: proweb-uh-prd-service
 spec:
   selector:
-    app: proweb-uh-uat
+    app: proweb-uh-prd
   sessionAffinity: None
   type: ClusterIP
   ports:
@@ -154,10 +153,10 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: proweb-uh-uat-ingress
-  namespace: proweb-uh-uat-ns
+  name: proweb-uh-prd-ingress
+  namespace: proweb-uh-prd-ns
   labels:
-    ingress: proweb-uh-uat-ingress
+    ingress: proweb-uh-prd-ingress
   annotations:
     alb.ingress.kubernetes.io/healthcheck-enabled: "true"
     alb.ingress.kubernetes.io/healthcheck-path: "/"
@@ -181,7 +180,7 @@ spec:
           pathType: Prefix
           backend:
             service:
-              name: proweb-uh-uat-service
+              name: proweb-uh-prd-service
               port:
                 number: 80
   tls:
@@ -192,7 +191,7 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: allow-egress-any-any
-  namespace: proweb-uh-uat-ns
+  namespace: proweb-uh-prd-ns
 spec:
   podSelector: {}
   policyTypes:
@@ -203,13 +202,13 @@ spec:
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: proweb-uh-uat-hpa
-  namespace: proweb-uh-uat-ns
+  name: proweb-uh-prd-hpa
+  namespace: proweb-uh-prd-ns
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: proweb-uh-uat
+    name: proweb-uh-prd
   minReplicas: 1
   maxReplicas: 2
   # behavior:
