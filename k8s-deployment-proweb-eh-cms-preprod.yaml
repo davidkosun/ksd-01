@@ -174,7 +174,7 @@ metadata:
 spec:
   ingressClassName: k8s-alb-https
   rules:
-    - host: cms-uat.echohouse.com.hk
+    - host: cms-preprod.echohouse.com.hk
       http:
         paths:
         - path: /
@@ -186,7 +186,7 @@ spec:
                 number: 80
   tls:
   - hosts: 
-    - cms-uat.echohouse.com.hk
+    - cms-preprod.echohouse.com.hk
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -212,6 +212,19 @@ spec:
     name: proweb-eh-uat-cms
   minReplicas: 1
   maxReplicas: 2
+  # behavior:
+  #   scaleDown:
+  #     stabilizationWindowSeconds: 30 # 30 sec cooldown for scaling down
+  #     policies:
+  #     - type: Percent
+  #       value: 100
+  #       periodSeconds: 900 # <20% CPU for 15 minutes
+  #   scaleUp:
+  #   stabilizationWindowSeconds: 10 # 10 sec cooldown for scaling up
+  #     policies:
+  #     - type: Percent
+  #       value: 100
+  #       periodSeconds: 180 # >20% CPU for 3 minutes
   metrics:
   - type: Resource
     resource:

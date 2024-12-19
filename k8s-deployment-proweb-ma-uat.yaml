@@ -174,7 +174,7 @@ metadata:
 spec:
   ingressClassName: k8s-alb-https
   rules:
-    - host: www-sit.mountanderson.com.hk
+    - host: www-uat.mountanderson.com.hk
       http:
         paths:
         - path: /
@@ -186,7 +186,7 @@ spec:
                 number: 80
   tls:
   - hosts: 
-    - www-sit.mountanderson.com.hk
+    - www-uat.mountanderson.com.hk
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy

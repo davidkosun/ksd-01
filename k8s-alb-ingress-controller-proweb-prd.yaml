@@ -2,21 +2,21 @@ apiVersion: alibabacloud.com/v1
 kind: AlbConfig
 metadata:
   name: k8s-alb-conf
-  namespace: proweb-ingress-uat-ns
+  namespace: proweb-ingress-prd-ns
 spec:
   config:
-    id: alb-pyy41v8whbskfhxk3k
+    id: alb-cvg4j9vx0omh1zt9dh
     forceOverride: false
     listenerForceOverride: true
-    # name: proweb-uat-k8s-ingress-controller
+    # name: proweb-prd-k8s-ingress-controller
     # addressType: Internet
     # zoneMappings:
     # - vSwitchId: vsw-j6cxd89avaisjnnrvhu6c
     # - vSwitchId: vsw-j6c3tvzewvu92oa7pqb6b
     # - vSwitchId: vsw-j6cvjkl7xa8lxg8rhn26n
     # accessLogConfig:
-    #   logProject: "proweb-uat-alblog-project"
-    #   logStore: "proweb_uat_alblog"
+    #   logProject: "proweb-prd-alblog-project"
+    #   logStore: "proweb_prd_alblog"
   listeners:
     # - port: 80
     #   protocol: HTTP
@@ -38,8 +38,8 @@ spec:
       aclConfig:
         aclType: White
         aclIds:
-          - acl-dth1uywek33zx2kxim
-          - acl-2lf1mi53r2v5crul9w
+          - acl-4jlgg0l0vq4c1zci6i
+          - acl-6wnrwl3x9h8kd9tbzz
         # aclEntries:
         #   - 127.0.0.1/32
       requestTimeout: 90

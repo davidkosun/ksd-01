@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: proweb-eh-uat-cms-oss-pv
+  name: proweb-webwsc-uat-www-oss-pv
   labels:
-    alicloud-pvname: proweb-eh-uat-cms-oss-pv
+    alicloud-pvname: proweb-webwsc-uat-www-oss-pv
 spec:
   storageClassName: oss
   capacity:
@@ -13,17 +13,17 @@ spec:
   flexVolume:
     driver: "alicloud/oss"
     options:
-      bucket: "proweb-eh-uat-cms-pv"
+      bucket: "proweb-webwsc-uat-www-pv"
       path: "/"
       url: "oss-cn-hongkong-internal.aliyuncs.com"
       otherOpts: "-o max_stat_cache_size=0 -o allow_other"
-      ramRole: "proweb-uat-eh-cms-k8s-oss-access-role"
+      ramRole: "proweb-uat-webwsc-www-k8s-oss-access-role"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: proweb-eh-uat-cms-oss-pvc
-  namespace: proweb-eh-uat-cms-ns
+  name: proweb-webwsc-uat-www-oss-pvc
+  namespace: proweb-webwsc-uat-www-ns
 spec:
   storageClassName: oss
   accessModes:
@@ -33,14 +33,14 @@ spec:
       storage: 100Gi
   selector:
     matchLabels:
-      alicloud-pvname: proweb-eh-uat-cms-oss-pv
+      alicloud-pvname: proweb-webwsc-uat-www-oss-pv
 ---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: proweb-eh-uat-cms-nas
+  name: proweb-webwsc-uat-www-nas
   labels:
-    alicloud-pvname: proweb-eh-uat-cms-nas
+    alicloud-pvname: proweb-webwsc-uat-www-nas
 spec:
   storageClassName: nas
   capacity:
@@ -50,15 +50,15 @@ spec:
   flexVolume:
     driver: "alicloud/nas"
     options:
-      server: "1246c54abe2-xyh43.cn-hongkong.nas.aliyuncs.com"
+      server: "12b2a948141-nkt43.cn-hongkong.nas.aliyuncs.com"
       path: "/"
       vers: "4.0"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: proweb-eh-uat-cms-nas-pvc
-  namespace: proweb-eh-uat-cms-ns
+  name: proweb-webwsc-uat-www-nas-pvc
+  namespace: proweb-webwsc-uat-www-ns
 spec:
   storageClassName: nas
   accessModes:
@@ -68,18 +68,18 @@ spec:
       storage: 100Gi
   selector:
     matchLabels:
-      alicloud-pvname: proweb-eh-uat-cms-nas
+      alicloud-pvname: proweb-webwsc-uat-www-nas
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: proweb-eh-uat-cms
-  namespace: proweb-eh-uat-cms-ns
+  name: proweb-webwsc-uat-www
+  namespace: proweb-webwsc-uat-www-ns
   labels:
-    app: proweb-eh-uat-cms
+    app: proweb-webwsc-uat-www
     Environment: UAT
     Owner: DigitalChannels
-    ProjectName: echohouse
+    ProjectName: whitesandcove
 spec:
   replicas: 1
   strategy:
@@ -88,31 +88,31 @@ spec:
      maxUnavailable: 0
   selector:
     matchLabels:
-      app: proweb-eh-uat-cms
+      app: proweb-webwsc-uat-www
   template:
     metadata:
       annotations:
         k8s.aliyun.com/eci-sls-enable: "true"
         k8s.aliyun.com/acr-service-arns: "acs:ram::5725926127090411:role/k8s-uat-acr-access"
       labels:
-        app: proweb-eh-uat-cms
+        app: proweb-webwsc-uat-www
     spec:
       containers:
-      - name: proweb-eh-uat-cms
+      - name: proweb-webwsc-uat-www
         # image: registry.cn-hangzhou.aliyuncs.com/acs-sample/nginxdemos:latest
-        image: proweb-acr-registry-vpc.cn-hongkong.cr.aliyuncs.com/proweb-uat/proweb-eh-uat-cms-acr-repo:latest
+        image: proweb-acr-registry-vpc.cn-hongkong.cr.aliyuncs.com/proweb-uat/proweb-webwsc-uat-www-acr-repo:latest
         ports:
         - containerPort: 80
         env:
         - name: VARNAME
           value: VARVAL
-        - name: aliyun_logs_proweb-eh-uat-cms-log
+        - name: aliyun_logs_proweb-webwsc-uat-www-log
           value: stdout
-        - name: aliyun_logs_proweb-eh-uat-cms-log_project
-          value: proweb-eh-uat-cms-log-project
-        - name: aliyun_logs_proweb-eh-uat-cms-log_logstore
-          value: proweb-eh-uat-cms-log
-        - name: aliyun_logs_proweb-eh-uat-cms_machinegroup
+        - name: aliyun_logs_proweb-webwsc-uat-www-log_project
+          value: proweb-webwsc-uat-www-log-project
+        - name: aliyun_logs_proweb-webwsc-uat-www-log_logstore
+          value: proweb-webwsc-uat-www-log
+        - name: aliyun_logs_proweb-webwsc-uat-www_machinegroup
           value: proweb-uat-k8s-cluster
         resources:
           requests:
@@ -122,28 +122,28 @@ spec:
             memory: "1024Mi"  # Maximum memory allowed
             cpu: "256m"       # Maximum CPU allowed
         volumeMounts:
-        - name: proweb-eh-uat-cms-oss-pvc
+        - name: proweb-webwsc-uat-www-oss-pvc
           mountPath: "/mnt/oss"
-        # - name: proweb-eh-uat-nas-pvc
+        # - name: proweb-webwsc-uat-nas-pvc
         #   mountPath: "/mnt/oss"
       volumes:
-      - name: proweb-eh-uat-cms-oss-pvc
+      - name: proweb-webwsc-uat-www-oss-pvc
         persistentVolumeClaim:
-          claimName: proweb-eh-uat-cms-oss-pvc
-      # - name: proweb-eh-uat-nas-pvc
+          claimName: proweb-webwsc-uat-www-oss-pvc
+      # - name: proweb-webwsc-uat-nas-pvc
       #   persistentVolumeClaim:
-      #     claimName: proweb-eh-uat-nas-pvc
+      #     claimName: proweb-webwsc-uat-nas-pvc
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: proweb-eh-uat-cms-service
-  namespace: proweb-eh-uat-cms-ns
+  name: proweb-webwsc-uat-www-service
+  namespace: proweb-webwsc-uat-www-ns
   labels:
-    app: proweb-eh-uat-cms-service
+    app: proweb-webwsc-uat-www-service
 spec:
   selector:
-    app: proweb-eh-uat-cms
+    app: proweb-webwsc-uat-www
   sessionAffinity: None
   type: ClusterIP
   ports:
@@ -154,10 +154,10 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: proweb-eh-uat-cms-ingress
-  namespace: proweb-eh-uat-cms-ns
+  name: proweb-webwsc-uat-www-ingress
+  namespace: proweb-webwsc-uat-www-ns
   labels:
-    ingress: proweb-eh-uat-cms-ingress
+    ingress: proweb-webwsc-uat-www-ingress
   annotations:
     alb.ingress.kubernetes.io/healthcheck-enabled: "true"
     alb.ingress.kubernetes.io/healthcheck-path: "/"
@@ -174,25 +174,25 @@ metadata:
 spec:
   ingressClassName: k8s-alb-https
   rules:
-    - host: cms-uat.echohouse.com.hk
+    - host: www-preprod.whitesandcove.com.hk
       http:
         paths:
         - path: /
           pathType: Prefix
           backend:
             service:
-              name: proweb-eh-uat-cms-service
+              name: proweb-webwsc-uat-www-service
               port:
                 number: 80
   tls:
   - hosts: 
-    - cms-uat.echohouse.com.hk
+    - www-preprod.whitesandcove.com.hk
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: allow-egress-any-any
-  namespace: proweb-eh-uat-cms-ns
+  namespace: proweb-webwsc-uat-www-ns
 spec:
   podSelector: {}
   policyTypes:
@@ -203,15 +203,28 @@ spec:
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: proweb-eh-uat-cms-hpa
-  namespace: proweb-eh-uat-cms-ns
+  name: proweb-webwsc-uat-www-hpa
+  namespace: proweb-webwsc-uat-www-ns
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: proweb-eh-uat-cms
+    name: proweb-webwsc-uat-www
   minReplicas: 1
   maxReplicas: 2
+  # behavior:
+  #   scaleDown:
+  #     stabilizationWindowSeconds: 30 # 30 sec cooldown for scaling down
+  #     policies:
+  #     - type: Percent
+  #       value: 100
+  #       periodSeconds: 900 # <20% CPU for 15 minutes
+  #   scaleUp:
+  #   stabilizationWindowSeconds: 10 # 10 sec cooldown for scaling up
+  #     policies:
+  #     - type: Percent
+  #       value: 100
+  #       periodSeconds: 180 # >20% CPU for 3 minutes
   metrics:
   - type: Resource
     resource:

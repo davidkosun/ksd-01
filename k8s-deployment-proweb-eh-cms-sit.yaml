@@ -174,7 +174,7 @@ metadata:
 spec:
   ingressClassName: k8s-alb-https
   rules:
-    - host: cms-uat.echohouse.com.hk
+    - host: cms-sit.echohouse.com.hk
       http:
         paths:
         - path: /
@@ -186,7 +186,7 @@ spec:
                 number: 80
   tls:
   - hosts: 
-    - cms-uat.echohouse.com.hk
+    - cms-sit.echohouse.com.hk
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy

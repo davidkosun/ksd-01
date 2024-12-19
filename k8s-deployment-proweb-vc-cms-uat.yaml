@@ -174,7 +174,7 @@ metadata:
 spec:
   ingressClassName: k8s-alb-https
   rules:
-    - host: cms-sit.victoriacoast.com.hk
+    - host: cms-uat.victoriacoast.com.hk
       http:
         paths:
         - path: /
@@ -186,7 +186,7 @@ spec:
                 number: 80
   tls:
   - hosts: 
-    - cms-sit.victoriacoast.com.hk
+    - cms-uat.victoriacoast.com.hk
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
