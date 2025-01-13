@@ -210,7 +210,7 @@ spec:
     kind: Deployment
     name: proweb-vc-prd-cms
   minReplicas: 1
-  maxReplicas: 2
+  maxReplicas: 1
   # behavior:
   #   scaleDown:
   #     stabilizationWindowSeconds: 30 # 30 sec cooldown for scaling down
