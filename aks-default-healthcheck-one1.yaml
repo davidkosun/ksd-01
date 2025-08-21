@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-default-healthcheck-one
+  namespace: healthcheck
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k8s-default-healthcheck-one
+  template:
+    metadata:
+      labels:
+        app: k8s-default-healthcheck-one
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+              - key: kubernetes.azure.com/agentpool
+                operator: In
+                values:
+                - lnpd01
+      containers:
+      - name: k8s-default-healthcheck-one
+        image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
+        ports:
+        - containerPort: 80
+        env:
+        - name: TITLE
+          value: "Welcome to Azure Kubernetes Service (AKS) Hello World One"
